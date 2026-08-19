@@ -14,9 +14,15 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
+        // Get port from hosting service
+        // If PORT is not available, use 8080
+        int port = Integer.parseInt(
+                System.getenv().getOrDefault("PORT", "8080")
+        );
+
         // Create Java web server
         HttpServer server = HttpServer.create(
-                new InetSocketAddress(8080), 0
+                new InetSocketAddress(port), 0
         );
 
         // Open the website
@@ -30,7 +36,7 @@ public class Main {
         server.start();
 
         System.out.println("Student Marks Server Started!");
-        System.out.println("Open: http://localhost:8080");
+        System.out.println("Server running on port: " + port);
     }
 
 
