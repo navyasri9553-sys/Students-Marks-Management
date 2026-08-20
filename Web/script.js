@@ -7,17 +7,31 @@ let students = [];
 
 function addStudent() {
 
-    let rollNo = document.getElementById("rollNo").value;
-    let name = document.getElementById("studentName").value;
+    let rollNo =
+        document.getElementById("rollNo").value;
 
-    let java = document.getElementById("java").value;
-    let python = document.getElementById("python").value;
-    let maths = document.getElementById("maths").value;
-    let english = document.getElementById("english").value;
-    let dbms = document.getElementById("dbms").value;
+    let name =
+        document.getElementById("studentName").value;
+
+    let java =
+        document.getElementById("java").value;
+
+    let python =
+        document.getElementById("python").value;
+
+    let maths =
+        document.getElementById("maths").value;
+
+    let english =
+        document.getElementById("english").value;
+
+    let dbms =
+        document.getElementById("dbms").value;
 
 
-    // Check empty fields
+    // ========================================
+    // CHECK EMPTY FIELDS
+    // ========================================
 
     if (
         rollNo === "" ||
@@ -35,7 +49,9 @@ function addStudent() {
     }
 
 
-    // Check maximum 70 students
+    // ========================================
+    // CHECK MAXIMUM 70 STUDENTS
+    // ========================================
 
     if (students.length >= 70) {
 
@@ -45,7 +61,9 @@ function addStudent() {
     }
 
 
-    // Create data to send to Java
+    // ========================================
+    // CREATE DATA TO SEND TO JAVA
+    // ========================================
 
     let studentData =
         "rollNo=" + encodeURIComponent(rollNo)
@@ -57,48 +75,77 @@ function addStudent() {
         + "&dbms=" + encodeURIComponent(dbms);
 
 
-    // Send data to Java backend
+    // ========================================
+    // SEND DATA TO JAVA BACKEND ON RENDER
+    // ========================================
 
-    fetch("/addStudent", {
+    fetch(
+        "https://students-marks-management.onrender.com/addStudent",
+        {
 
-        method: "POST",
+            method: "POST",
 
-        headers: {
-            "Content-Type":
-                "application/x-www-form-urlencoded"
-        },
+            headers: {
+                "Content-Type":
+                    "application/x-www-form-urlencoded"
+            },
 
-        body: studentData
+            body: studentData
 
+        }
+    )
+
+    .then(response => {
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server error: " + response.status
+            );
+        }
+
+        return response.json();
     })
-
-    .then(response => response.json())
 
     .then(student => {
 
-        // Add Java result to JavaScript array
+        // ========================================
+        // ADD JAVA RESULT TO JAVASCRIPT ARRAY
+        // ========================================
 
         students.push(student);
 
 
-        // Display students
+        // ========================================
+        // DISPLAY STUDENTS
+        // ========================================
 
         displayStudents();
 
 
-        // Update statistics
+        // ========================================
+        // UPDATE STATISTICS
+        // ========================================
 
         updateStatistics();
 
 
-        // Clear input boxes
+        // ========================================
+        // CLEAR INPUT BOXES
+        // ========================================
 
         document.getElementById("rollNo").value = "";
+
         document.getElementById("studentName").value = "";
+
         document.getElementById("java").value = "";
+
         document.getElementById("python").value = "";
+
         document.getElementById("maths").value = "";
+
         document.getElementById("english").value = "";
+
         document.getElementById("dbms").value = "";
 
     })
@@ -107,7 +154,9 @@ function addStudent() {
 
         console.log(error);
 
-        alert("Could not connect to Java server.");
+        alert(
+            "Could not connect to Java server."
+        );
 
     });
 }
@@ -174,7 +223,9 @@ function updateStatistics() {
     }
 
 
-    // Find topper
+    // ========================================
+    // FIND TOPPER
+    // ========================================
 
     let topper = students[0];
 
@@ -192,7 +243,9 @@ function updateStatistics() {
         topper.name;
 
 
-    // Calculate class average
+    // ========================================
+    // CALCULATE CLASS AVERAGE
+    // ========================================
 
     let totalMarks = 0;
 

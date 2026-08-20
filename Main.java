@@ -100,6 +100,38 @@ public class Main {
 
     static void addStudent(HttpExchange exchange) throws IOException {
 
+        // Allow Vercel website to connect to Java server
+        exchange.getResponseHeaders()
+                .set(
+                    "Access-Control-Allow-Origin",
+                    "https://students-marks-management.vercel.app"
+                );
+
+        // Allow POST request
+        exchange.getResponseHeaders()
+                .set(
+                    "Access-Control-Allow-Methods",
+                    "POST, OPTIONS"
+                );
+
+        // Allow required headers
+        exchange.getResponseHeaders()
+                .set(
+                    "Access-Control-Allow-Headers",
+                    "Content-Type"
+                );
+
+
+        // Handle browser preflight request
+        if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+
+            exchange.sendResponseHeaders(204, -1);
+
+            return;
+        }
+
+
+        // Only POST is allowed
         if (!exchange.getRequestMethod().equalsIgnoreCase("POST")) {
 
             exchange.sendResponseHeaders(405, -1);
@@ -107,7 +139,11 @@ public class Main {
             return;
         }
 
-        // Read data sent by JavaScript
+
+        // =========================================
+        // READ DATA SENT BY JAVASCRIPT
+        // =========================================
+
         InputStream input = exchange.getRequestBody();
 
         String body = new String(
@@ -115,11 +151,14 @@ public class Main {
                 StandardCharsets.UTF_8
         );
 
+
         // Convert received data into a Map
         Map<String, String> data = parseData(body);
 
 
-        // Get student details
+        // =========================================
+        // GET STUDENT DETAILS
+        // =========================================
 
         int rollNo = Integer.parseInt(
                 data.get("rollNo")
@@ -148,7 +187,9 @@ public class Main {
         );
 
 
-        // Create Student object
+        // =========================================
+        // CREATE STUDENT OBJECT
+        // =========================================
 
         Student student = new Student(
                 rollNo,
@@ -161,17 +202,23 @@ public class Main {
         );
 
 
-        // Java calculates the result
+        // =========================================
+        // CALCULATE RESULT
+        // =========================================
 
         student.calculateResult();
 
 
-        // Store student
+        // =========================================
+        // STORE STUDENT
+        // =========================================
 
         classRoom.addStudent(student);
 
 
-        // Send result back to JavaScript
+        // =========================================
+        // SEND RESULT BACK TO JAVASCRIPT
+        // =========================================
 
         String json =
                 "{"
@@ -184,15 +231,21 @@ public class Main {
 
 
         exchange.getResponseHeaders()
-                .set("Content-Type", "application/json");
+                .set(
+                    "Content-Type",
+                    "application/json"
+                );
+
 
         byte[] response =
                 json.getBytes(StandardCharsets.UTF_8);
+
 
         exchange.sendResponseHeaders(
                 200,
                 response.length
         );
+
 
         OutputStream output =
                 exchange.getResponseBody();
@@ -250,7 +303,8 @@ public class Main {
         FileInputStream input =
                 new FileInputStream(file);
 
-        byte[] data = input.readAllBytes();
+        byte[] data =
+                input.readAllBytes();
 
         input.close();
 
